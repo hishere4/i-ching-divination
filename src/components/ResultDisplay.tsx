@@ -24,7 +24,7 @@ export default function ResultDisplay({ result, onReset }: Props) {
 
   const originalMeaning = getMeaning(originalHexagram, category);
   const changedMeaning = getMeaning(changedHexagram, category);
-  const conclusion = generateConclusion(originalHexagram, changedHexagram, movingYao, category, question);
+  const conclusion = generateConclusion(originalHexagram, changedHexagram, movingYao, category, question, result.originalYao);
 
   const handleShare = async () => {
     const text = `【妙算申帷幄】\n問：${question}\n\n本卦：${originalHexagram.name}\n${originalMeaning}\n\n之卦：${changedHexagram.name}\n${changedMeaning}\n\n${conclusion}`;
