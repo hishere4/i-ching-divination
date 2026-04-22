@@ -59,6 +59,41 @@ export function getMeaning(hexagram: Hexagram, category: string): string {
 }
 
 /**
+ * 生成爻辭解釋（簡化版）
+ */
+export function getYaoExplanation(position: number, isYang: boolean): string {
+  const yaoTexts: Record<number, Record<string, string>> = {
+    1: {
+      'yang': '初九：潛龍勿用。時機未到，宜韜光養晦。',
+      'yin': '初六：履霜堅冰至。防微杜漸，見微知著。'
+    },
+    2: {
+      'yang': '九二：見龍在田，利見大人。才華漸顯，得遇貴人。',
+      'yin': '六二：直方大，不習無不利。順其自然，無往不利。'
+    },
+    3: {
+      'yang': '九三：君子終日乾乾，夕惕若。勤奮不懈，謹慎自持。',
+      'yin': '六三：含章可貞，或從王事。內蘊才華，待時而發。'
+    },
+    4: {
+      'yang': '九四：或躍在淵，無咎。進退有度，伺機而動。',
+      'yin': '六四：括囊，無咎無譽。收斂鋒芒，明哲保身。'
+    },
+    5: {
+      'yang': '九五：飛龍在天，利見大人。如日中天，大展宏圖。',
+      'yin': '六五：黃裳元吉。謙和處下，大吉之象。'
+    },
+    6: {
+      'yang': '上九：亢龍有悔。物極必反，盛極而衰。',
+      'yin': '上六：龍戰于野，其血玄黃。陰陽交戰，兩敗俱傷。'
+    }
+  };
+  
+  const key = isYang ? 'yang' : 'yin';
+  return yaoTexts[position]?.[key] || `${position}爻：動而化變，吉凶未定。`;
+}
+
+/**
  * 獲取爻位名稱
  */
 function getYaoName(position: number): string {
