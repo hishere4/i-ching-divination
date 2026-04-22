@@ -174,9 +174,12 @@ export default function ResultDisplay({ result, onReset }: Props) {
       </div>
 
       {/* 免責聲明 */}
-      <div className="text-center text-xs text-gray-500 mt-8 p-4">
+      <div className="text-center text-xs text-gray-500 mt-8 p-4 bg-gray-50 rounded-lg">
+        <p className="mb-1">
+          💡 本活動以文化體驗為主，占卜結果僅供參考，並非對未來作出絕對預測。
+        </p>
         <p>
-          💡 占卜結果僅供參考，人生掌握在自己手中。
+          人生掌握在自己手中，請理性看待占卜結果。
         </p>
       </div>
     </div>

@@ -97,6 +97,9 @@ export default function Home() {
         <div className="footer-pattern"></div>
         <p>妙算申帷幄 · 傳統智慧 · 現代解讀</p>
         <p className="mt-2 text-xs text-amber-200/40">
+          本活動以文化體驗為主，占卜結果僅供參考
+        </p>
+        <p className="mt-1 text-xs text-amber-200/40">
           © 2026 妙算申帷幄
         </p>
       </footer>

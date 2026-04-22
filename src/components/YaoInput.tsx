@@ -211,6 +211,10 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
           <br/>• <span className="font-bold">少陽/少陰</span>：靜爻，不會變動
           <br/>• <span className="font-bold text-red-700">老陽/老陰</span>：動爻，會變化成相反屬性
           <br/>• 沒有動爻也可以解卦，顯示當前狀態
+          <br/><br/>
+          <span className="font-bold text-red-700">本卦</span>：代表事情目前的整體處境，幫助你看清現況
+          <br/><span className="font-bold text-red-700">變爻</span>：代表事情中最關鍵、最值得留意的轉折點
+          <br/><span className="font-bold text-red-700">之卦</span>：代表事情的發展趨勢與可能結果
         </p>
       </div>
     </div>
