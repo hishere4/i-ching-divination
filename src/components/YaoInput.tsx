@@ -128,7 +128,7 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
           請輸入本卦六爻之結果
         </h2>
         <p className="text-gray-600 text-sm">
-          從下到上填寫：上爻 → 初爻
+          從上到下填寫：上爻 → 初爻
         </p>
       </div>
 
@@ -178,7 +178,7 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
                     ? (currentValue.includes('old') ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700')
                     : 'bg-gray-100 text-gray-400'
                 }`}>
-                  {getYaoLabel(currentValue)}
+                  {label}：{getYaoLabel(currentValue)}
                 </span>
               </div>
             </div>
