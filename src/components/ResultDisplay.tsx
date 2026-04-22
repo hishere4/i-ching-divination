@@ -54,7 +54,7 @@ export default function ResultDisplay({ result, onReset }: Props) {
           </div>
 
           <div className="hexagram-display mb-4">
-            {originalHexagram.yaoPattern.split('').reverse().map((yao, idx) => {
+            {originalHexagram.pattern.split('').reverse().map((yao, idx) => {
               const isMoving = movingYao.includes(6 - idx);
               const isYang = yao === '1';
               return (
@@ -90,7 +90,7 @@ export default function ResultDisplay({ result, onReset }: Props) {
           </div>
 
           <div className="hexagram-display mb-4">
-            {changedHexagram.yaoPattern.split('').reverse().map((yao, idx) => {
+            {changedHexagram.pattern.split('').reverse().map((yao, idx) => {
               const isYang = yao === '1';
               return (
                 <div key={idx} className="w-full mb-2">
