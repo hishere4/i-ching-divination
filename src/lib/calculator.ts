@@ -164,44 +164,53 @@ export function generateConclusion(
       categoryAdvice = generateGeneralAdvice(originalHexagram, changedHexagram, movingYao);
   }
 
-  return `先說清楚：
+  return `【免責聲明】
 
-*卜卦未必能給出一個絕對肯定的答案，這個結果較適合解讀成「事情發展的趨勢與條件」，而不是「一定會如何」的保證。*
+卜卦未必能給出一個絕對肯定的答案，這個結果較適合解讀成「事情發展的趨勢與條件」，而不是「一定會如何」的保證。
 
-你這個卦是：
+━━━━━━━━━━━━━━━━━━━━━━
+
+【你的卦象】
 
 ${yaoList}
 
-由下而上看，**本卦${originalHexagram.name}** 可以理解為一種「${originalHexagram.description.replace('。', '')}」的狀態；
-${hasMoving ? `而${movingYao.map(p => getYaoName(p)).join('、')}變，表示${changePhase}。` : '沒有動爻，表示目前處於相對穩定的狀態。'}
+━━━━━━━━━━━━━━━━━━━━━━
 
----
+【卦象分析】
 
-## 簡單解讀
+由下而上看，本卦「${originalHexagram.name}」可以理解為一種「${originalHexagram.description.replace('。', '')}」的狀態。
+
+${hasMoving ? `而 ${movingYao.map(p => getYaoName(p)).join('、')} 變，表示：${changePhase}。` : '沒有動爻，表示目前處於相對穩定的狀態。'}
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+【簡單解讀】
 
 這個卦比較像在說：
 
-> *${getMeaning(originalHexagram, category)}*
+「${getMeaning(originalHexagram, category)}」
 
-${hasMoving ? `變化後的**之卦${changedHexagram.name}**，則暗示：\n\n> *${getMeaning(changedHexagram, category)}*` : ''}
+${hasMoving ? `變化後的之卦「${changedHexagram.name}」，則暗示：\n\n「${getMeaning(changedHexagram, category)}」` : ''}
 
----
+━━━━━━━━━━━━━━━━━━━━━━
 
-## 具體建議
+【具體建議】
 
 ${categoryAdvice}
 
----
+━━━━━━━━━━━━━━━━━━━━━━
 
-## 直接回答你
+【總結】
 
-如果用一句人話總結：
+${generateFinalSummary(originalHexagram, changedHexagram, movingYao, category, hasMoving)}
 
-> *${generateFinalSummary(originalHexagram, changedHexagram, movingYao, category, hasMoving)}*
+━━━━━━━━━━━━━━━━━━━━━━
 
-另外也想提醒一句：
+【提醒】
 
-這類問題最終往往不是單靠卦象，而是很受 *現實情況、主動程度、時間安排、客觀條件* 影響。卦象提供的是一個「趨勢參考」，真正嘅結果，始終掌握在你自己手中。`;
+這類問題最終往往不是單靠卦象，而是很受「現實情況、主動程度、時間安排、客觀條件」影響。
+
+卦象提供的是一個「趨勢參考」，真正嘅結果，始終掌握在你自己手中。`;
 }
 
 /**

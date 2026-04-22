@@ -147,11 +147,11 @@ export default function ResultDisplay({ result, onReset }: Props) {
 
       {/* 結論 */}
       <div className="chinese-card p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-4 text-center" style={{fontFamily: "'Ma Shan Zheng', cursive"}}>
+        <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center" style={{fontFamily: "'Ma Shan Zheng', cursive"}}>
           結論
         </h3>
-        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-5 border-2 border-amber-300">
-          <div className="text-gray-800 leading-relaxed whitespace-pre-line text-base">
+        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-6 border-2 border-amber-300">
+          <div className="text-gray-800 leading-loose whitespace-pre-line text-base space-y-4">
             {conclusion}
           </div>
         </div>
