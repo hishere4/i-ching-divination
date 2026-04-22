@@ -62,15 +62,14 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
     onSubmit(yaoInputs);
   };
 
-  // 從上到下顯示：上爻 → 初爻
-  // 但數據索引：5=上爻, 4=五爻, 3=四爻, 2=三爻, 1=二爻, 0=初爻
+  // 從第六次開始顯示（初爻在最上）
   const displayOrder = [
-    { idx: 5, label: '第一次（上爻）' },
-    { idx: 4, label: '第二次（五爻）' },
-    { idx: 3, label: '第三次（四爻）' },
-    { idx: 2, label: '第四次（三爻）' },
-    { idx: 1, label: '第五次（二爻）' },
     { idx: 0, label: '第六次（初爻）' },
+    { idx: 1, label: '第五次（二爻）' },
+    { idx: 2, label: '第四次（三爻）' },
+    { idx: 3, label: '第三次（四爻）' },
+    { idx: 4, label: '第二次（五爻）' },
+    { idx: 5, label: '第一次（上爻）' },
   ];
 
   const options = [
