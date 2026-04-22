@@ -41,7 +41,7 @@ export default function Home() {
       <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-6 shadow-lg sticky top-0 z-50">
         <div className="max-w-2xl mx-auto px-4 text-center">
           <h1 className="title-main text-white">
-            易經占卜
+            妙算申帷幄 - 啟示
           </h1>
           <p className="text-sm mt-2 text-amber-200">
             問天機 · 觀陰陽 · 明進退
@@ -95,9 +95,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-amber-200/60 py-8 mt-12 text-center text-sm">
         <div className="footer-pattern"></div>
-        <p>易經占卜 · 傳統智慧 · 現代解讀</p>
+        <p>妙算申帷幄 · 傳統智慧 · 現代解讀</p>
         <p className="mt-2 text-xs text-amber-200/40">
-          © 2026 易經占卜
+          © 2026 妙算申帷幄
         </p>
       </footer>
     </main>

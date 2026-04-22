@@ -8,10 +8,10 @@ interface Props {
   onBack: () => void;
 }
 
-type YaoValue = 'yang' | 'yin' | 'moving-yang' | 'moving-yin';
+type YaoValue = undefined | 'old-yin' | 'young-yang' | 'young-yin' | 'old-yang';
 
 export default function YaoInput({ onSubmit, onBack }: Props) {
-  const [yaoValues, setYaoValues] = useState<YaoValue[]>(Array(6).fill('yang'));
+  const [yaoValues, setYaoValues] = useState<YaoValue[]>(Array(6).fill(undefined));
   const [error, setError] = useState('');
 
   const handleYaoChange = (position: number, value: YaoValue) => {
@@ -22,64 +22,101 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
   };
 
   const handleSubmit = () => {
-    const hasMoving = yaoValues.some(v => v.includes('moving'));
-    if (!hasMoving) {
-      setError('請至少標記一個動爻（動陽或動陰）');
+    // 檢查是否全部已選擇
+    if (yaoValues.some(v => v === undefined)) {
+      setError('請為每個爻選擇一個選項');
       return;
     }
 
-    const yaoInputs: YaoInput[] = yaoValues.map((val, idx) => ({
-      position: idx + 1,
-      value: val.includes('yang') ? 1 : 0,
-      isMoving: val.includes('moving'),
-    }));
+    const yaoInputs: YaoInput[] = yaoValues.map((val, idx) => {
+      // idx 0=初爻, 1=二爻, 2=三爻, 3=四爻, 4=五爻, 5=上爻
+      let value = 0;
+      let isMoving = false;
+      
+      switch (val) {
+        case 'old-yin':    // 老陰 = 陰動
+          value = 0;
+          isMoving = true;
+          break;
+        case 'young-yang': // 少陽 = 陽靜
+          value = 1;
+          isMoving = false;
+          break;
+        case 'young-yin':  // 少陰 = 陰靜
+          value = 0;
+          isMoving = false;
+          break;
+        case 'old-yang':   // 老陽 = 陽動
+          value = 1;
+          isMoving = true;
+          break;
+      }
+      
+      return {
+        position: idx + 1,
+        value,
+        isMoving,
+      };
+    });
 
     onSubmit(yaoInputs);
   };
 
-  const positions = ['初爻（最下）', '二爻', '三爻', '四爻', '五爻', '上爻（最上）'];
+  // 從上到下顯示：上爻 → 初爻
+  // 但數據索引：5=上爻, 4=五爻, 3=四爻, 2=三爻, 1=二爻, 0=初爻
+  const displayOrder = [
+    { idx: 5, label: '第一次（上爻）' },
+    { idx: 4, label: '第二次（五爻）' },
+    { idx: 3, label: '第三次（四爻）' },
+    { idx: 2, label: '第四次（三爻）' },
+    { idx: 1, label: '第五次（二爻）' },
+    { idx: 0, label: '第六次（初爻）' },
+  ];
 
-  // 渲染單個爻的視覺顯示
+  const options = [
+    { value: 'old-yin' as YaoValue, label: '老陰', desc: '陰動', color: 'bg-blue-900' },
+    { value: 'young-yang' as YaoValue, label: '少陽', desc: '陽靜', color: 'bg-gray-600' },
+    { value: 'young-yin' as YaoValue, label: '少陰', desc: '陰靜', color: 'bg-gray-400' },
+    { value: 'old-yang' as YaoValue, label: '老陽', desc: '陽動', color: 'bg-red-700' },
+  ];
+
+  const getYaoLabel = (value: YaoValue) => {
+    if (!value) return '未選擇';
+    switch(value) {
+      case 'old-yin': return '老陰（陰動）';
+      case 'young-yang': return '少陽（陽靜）';
+      case 'young-yin': return '少陰（陰靜）';
+      case 'old-yang': return '老陽（陽動）';
+    }
+  };
+
   const renderYaoVisual = (value: YaoValue) => {
-    const isMoving = value.includes('moving');
-    const isYang = value.includes('yang');
+    if (!value) return <div className="text-gray-400 text-sm">請選擇</div>;
+    
+    const isMoving = value === 'old-yin' || value === 'old-yang';
+    const isYang = value === 'young-yang' || value === 'old-yang';
     
     if (isYang) {
       return (
         <div className="flex items-center justify-center w-full py-2">
           <div 
-            className={`h-1.5 rounded-full flex-1 ${isMoving ? 'bg-red-700 shadow-lg shadow-red-300' : 'bg-gray-900'}`}
+            className={`h-2 rounded-full flex-1 ${isMoving ? 'bg-red-700 shadow-lg shadow-red-300' : 'bg-gray-900'}`}
             style={{maxWidth: '120px'}}
           ></div>
-          {isMoving && (
-            <span className="text-red-600 font-bold ml-2 text-lg animate-pulse">★</span>
-          )}
         </div>
       );
     } else {
       return (
         <div className="flex items-center justify-center w-full py-2 gap-1">
           <div 
-            className={`h-1.5 rounded-full w-12 ${isMoving ? 'bg-red-700 shadow-lg shadow-red-300' : 'bg-gray-900'}`}
+            className={`h-2 rounded-full w-12 ${isMoving ? 'bg-red-700 shadow-lg shadow-red-300' : 'bg-gray-900'}`}
           ></div>
           <div className="w-2"></div>
           <div 
-            className={`h-1.5 rounded-full w-12 ${isMoving ? 'bg-red-700 shadow-lg shadow-red-300' : 'bg-gray-900'}`}
+            className={`h-2 rounded-full w-12 ${isMoving ? 'bg-red-700 shadow-lg shadow-red-300' : 'bg-gray-900'}`}
           ></div>
-          {isMoving && (
-            <span className="text-red-600 font-bold ml-2 text-lg animate-pulse">★</span>
-          )}
         </div>
       );
-    }
-  };
-
-  const getYaoLabel = (value: YaoValue) => {
-    switch(value) {
-      case 'yang': return '陽';
-      case 'yin': return '陰';
-      case 'moving-yang': return '動陽';
-      case 'moving-yin': return '動陰';
     }
   };
 
@@ -88,87 +125,60 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
       <div className="text-center mb-6">
         <div className="text-5xl mb-3">☯</div>
         <h2 className="title-section mb-2">
-          請輸入六爻陰陽
+          請輸入本卦六爻之結果
         </h2>
         <p className="text-gray-600 text-sm">
-          從下到上：初爻 → 上爻
+          從下到上填寫：上爻 → 初爻
         </p>
       </div>
 
-      {/* 六爻輸入區 */}
+      {/* 六爻輸入區 - 從上爻到初爻 */}
       <div className="space-y-3 mb-6">
-        {positions.map((pos, idx) => {
+        {displayOrder.map(({ idx, label }) => {
           const currentValue = yaoValues[idx];
           return (
-            <div key={idx} className="border border-amber-200 rounded-xl p-3 bg-amber-50/50">
+            <div key={idx} className={`border rounded-xl p-3 ${currentValue ? 'border-amber-300 bg-amber-50/30' : 'border-gray-200 bg-gray-50/50'}`}>
               {/* 爻位標籤 + 視覺 + 按鈕 */}
               <div className="flex flex-col md:flex-row md:items-center gap-3">
                 
                 {/* 位置標籤 */}
-                <div className="w-20 shrink-0">
+                <div className="w-28 shrink-0">
                   <span className="text-sm font-bold text-amber-900">
-                    {pos}
+                    {label}
                   </span>
                 </div>
                 
                 {/* 視覺化爻 */}
-                <div className="flex-1 flex justify-center bg-white rounded-lg py-2 px-4 shadow-inner">
+                <div className="flex-1 flex justify-center bg-white rounded-lg py-2 px-4 shadow-inner min-h-[40px]">
                   {renderYaoVisual(currentValue)}
                 </div>
                 
                 {/* 選擇按鈕 */}
                 <div className="flex gap-1 shrink-0">
-                  <button
-                    onClick={() => handleYaoChange(idx, 'yang')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                      currentValue === 'yang'
-                        ? 'bg-gray-800 text-white shadow-md'
-                        : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    陽
-                  </button>
-                  <button
-                    onClick={() => handleYaoChange(idx, 'yin')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                      currentValue === 'yin'
-                        ? 'bg-gray-800 text-white shadow-md'
-                        : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    陰
-                  </button>
-                  <button
-                    onClick={() => handleYaoChange(idx, 'moving-yang')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                      currentValue === 'moving-yang'
-                        ? 'bg-red-700 text-white shadow-md'
-                        : 'bg-white border border-red-300 text-red-700 hover:bg-red-50'
-                    }`}
-                  >
-                    動陽
-                  </button>
-                  <button
-                    onClick={() => handleYaoChange(idx, 'moving-yin')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                      currentValue === 'moving-yin'
-                        ? 'bg-red-700 text-white shadow-md'
-                        : 'bg-white border border-red-300 text-red-700 hover:bg-red-50'
-                    }`}
-                  >
-                    動陰
-                  </button>
+                  {options.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => handleYaoChange(idx, opt.value)}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all border ${
+                        currentValue === opt.value
+                          ? 'bg-amber-400 text-amber-900 border-amber-500 shadow-md ring-2 ring-amber-300'
+                          : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
               
               {/* 當前選擇顯示 */}
               <div className="mt-2 text-center">
-                <span className={`inline-block px-2 py-0.5 rounded text-xs ${
-                  currentValue.includes('moving') 
-                    ? 'bg-red-100 text-red-700' 
-                    : 'bg-gray-100 text-gray-600'
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                  currentValue 
+                    ? (currentValue.includes('old') ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700')
+                    : 'bg-gray-100 text-gray-400'
                 }`}>
-                  當前：{getYaoLabel(currentValue)}
+                  {getYaoLabel(currentValue)}
                 </span>
               </div>
             </div>
@@ -177,7 +187,7 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
       </div>
 
       {error && (
-        <p className="text-red-600 text-sm text-center mb-4 bg-red-50 p-2 rounded-lg">{error}</p>
+        <p className="text-red-600 text-sm text-center mb-4 bg-red-50 p-3 rounded-lg">{error}</p>
       )}
 
       <div className="flex gap-4">
@@ -198,8 +208,9 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
       <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
         <p className="text-sm text-amber-800">
           <span className="font-bold">📖 說明：</span>
-          點擊按鈕選擇每個爻的類型。
-          <span className="font-bold text-red-700">必須至少選擇一個「動陽」或「動陰」</span>作為動爻。
+          <br/>• <span className="font-bold">少陽/少陰</span>：靜爻，不會變動
+          <br/>• <span className="font-bold text-red-700">老陽/老陰</span>：動爻，會變化成相反屬性
+          <br/>• 沒有動爻也可以解卦，顯示當前狀態
         </p>
       </div>
     </div>

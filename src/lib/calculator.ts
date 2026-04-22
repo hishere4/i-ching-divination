@@ -117,3 +117,36 @@ export function getYaoExplanation(position: number, isYang: boolean): string {
   const key = isYang ? 'yang' : 'yin';
   return yaoTexts[position]?.[key] || `${position}爻：動而化變，吉凶未定。`;
 }
+
+/**
+ * 生成詳細結論
+ */
+export function generateConclusion(
+  originalHexagram: Hexagram,
+  changedHexagram: Hexagram,
+  movingYao: number[],
+  category: string,
+  question: string
+): string {
+  const originalMeaning = getMeaning(originalHexagram, category);
+  const changedMeaning = getMeaning(changedHexagram, category);
+  
+  // 根據動爻數量生成不同結論
+  if (movingYao.length === 0) {
+    return `這個結果給你的訊息是：\n\n${originalMeaning}\n\n目前局面穩定，沒有明顯變動。這表示當前狀態會持續一段時間，你可以按現有計劃行事。\n\n一句話總結：\n保持現狀，穩步前行。`;
+  }
+  
+  if (movingYao.length === 1) {
+    return `這個結果給你的訊息是：\n\n目前狀態：${originalMeaning}\n\n變化趨勢：${changedMeaning}\n\n有一個動爻，表示局面正在發生單一而明確的轉變。這個轉變是漸進的，你可以順應這個變化，調整自己的方向。\n\n一句話總結：\n順應變化，把握轉機。`;
+  }
+  
+  if (movingYao.length === 2) {
+    return `這個結果給你的訊息是：\n\n目前狀態：${originalMeaning}\n\n變化趨勢：${changedMeaning}\n\n有兩個動爻，代表局面其實正在改變。這不是「完全不要動」，也不是「立刻強攻」。轉變是雙方面的，需要同時處理兩個層面的問題。\n\n一句話總結：\n可以主動，但不宜急攻；先化解卡住的地方，再推進。`;
+  }
+  
+  if (movingYao.length >= 3) {
+    return `這個結果給你的訊息是：\n\n目前狀態：${originalMeaning}\n\n變化趨勢：${changedMeaning}\n\n有多個動爻，表示局面複雜，變動劇烈。這代表事情正在大幅轉變，舊的局面即將結束，新的局面正在形成。\n\n一句話總結：\n大變在即，順勢而為，把握新機。`;
+  }
+  
+  return `${originalMeaning}\n\n變化趨勢：${changedMeaning}`;
+}
