@@ -83,10 +83,10 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
   const getYaoLabel = (value: YaoValue) => {
     if (!value) return '未選擇';
     switch(value) {
-      case 'old-yin': return '老陰（陰動）';
-      case 'young-yang': return '少陽（陽靜）';
-      case 'young-yin': return '少陰（陰靜）';
-      case 'old-yang': return '老陽（陽動）';
+      case 'old-yin': return '老陰';
+      case 'young-yang': return '少陽';
+      case 'young-yin': return '少陰';
+      case 'old-yang': return '老陽';
     }
   };
 
