@@ -27,7 +27,6 @@ export default function ResultDisplay({ result, onReset }: Props) {
         // 用戶取消分享
       }
     } else {
-      // 複製到剪貼簿
       await navigator.clipboard.writeText(text);
       alert('已複製到剪貼簿！');
     }
@@ -36,49 +35,98 @@ export default function ResultDisplay({ result, onReset }: Props) {
   return (
     <div className="space-y-6">
       {/* 問題回顧 */}
-      <div className="bg-white rounded-2xl shadow-lg border border-ink-200 p-6">
-        <p className="text-sm text-ink-500 mb-1">你的問題</p>
-        <p className="text-lg font-bold text-ink-800">{question}</p>
+      <div className="chinese-card p-6">
+        <p className="text-sm text-gray-500 mb-1">你的問題</p>
+        <p className="text-lg font-bold text-gray-900">{question}</p>
       </div>
 
-      {/* 本卦 */}
-      <div className="bg-white rounded-2xl shadow-lg border-2 border-gold-300 p-8">
-        <div className="text-center mb-6">
-          <span className="inline-block px-4 py-1 bg-gold-100 text-gold-700 rounded-full text-sm font-bold mb-3">
-            本卦
-          </span>
-          <h2 className="text-3xl font-serif font-bold text-ink-900">
-            {originalHexagram.name}
-          </h2>
-          <p className="text-ink-500 mt-1">{originalHexagram.symbol}</p>
-        </div>
+      {/* 卦象顯示區 */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* 本卦 */}
+        <div className="result-card">
+          <div className="text-center mb-4">
+            <span className="inline-block px-4 py-1 bg-red-700 text-white rounded-full text-sm font-bold mb-3">
+              本卦
+            </span>
+            <h2 className="text-3xl font-bold text-gray-900" style={{fontFamily: "'Ma Shan Zheng', cursive"}}>
+              {originalHexagram.name}
+            </h2>
+          </div>
 
-        <div className="bg-parchment-50 rounded-xl p-6">
-          <p className="text-ink-700 leading-relaxed text-lg">
-            {originalMeaning}
+          <div className="hexagram-display mb-4">
+            {originalHexagram.yaoPattern.split('').reverse().map((yao, idx) => {
+              const isMoving = movingYao.includes(6 - idx);
+              const isYang = yao === '1';
+              return (
+                <div key={idx} className="w-full mb-2">
+                  <div className={`${isYang ? 'yao-yang' : 'yao-yin'} ${isMoving ? 'yao-active' : ''}`} style={{width: '200px'}}>
+                    {isMoving && <span className="moving-yao-mark ml-2">★</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+            <p className="text-gray-800 leading-relaxed text-lg">
+              {originalMeaning}
+            </p>
+          </div>
+
+          <p className="text-sm text-gray-500 mt-3 text-center">
+            {originalHexagram.description}
           </p>
         </div>
 
-        <p className="text-sm text-ink-400 mt-4 text-center">
-          {originalHexagram.description}
-        </p>
+        {/* 之卦 */}
+        <div className="result-card">
+          <div className="text-center mb-4">
+            <span className="inline-block px-4 py-1 bg-amber-600 text-white rounded-full text-sm font-bold mb-3">
+              之卦
+            </span>
+            <h2 className="text-3xl font-bold text-gray-900" style={{fontFamily: "'Ma Shan Zheng', cursive"}}>
+              {changedHexagram.name}
+            </h2>
+          </div>
+
+          <div className="hexagram-display mb-4">
+            {changedHexagram.yaoPattern.split('').reverse().map((yao, idx) => {
+              const isYang = yao === '1';
+              return (
+                <div key={idx} className="w-full mb-2">
+                  <div className={`${isYang ? 'yao-yang' : 'yao-yin'}`} style={{width: '200px'}}></div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+            <p className="text-gray-800 leading-relaxed text-lg">
+              {changedMeaning}
+            </p>
+          </div>
+
+          <p className="text-sm text-gray-500 mt-3 text-center">
+            {changedHexagram.description}
+          </p>
+        </div>
       </div>
 
-      {/* 動爻 */}
+      {/* 動爻解釋 */}
       {movingYao.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg border border-ink-200 p-6">
-          <h3 className="text-lg font-bold text-ink-800 mb-4">
+        <div className="chinese-card p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4" style={{fontFamily: "'Ma Shan Zheng', cursive"}}>
             動爻解釋
           </h3>
           <div className="space-y-3">
             {movingYao.map(pos => {
               const yao = result.originalYao[pos - 1];
               return (
-                <div key={pos} className="p-4 bg-parchment-50 rounded-lg">
-                  <p className="font-bold text-ink-700 mb-1">
+                <div key={pos} className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                  <p className="font-bold text-red-700 mb-1">
                     第{pos}爻（{yao.value === 1 ? '陽' : '陰'}動）
                   </p>
-                  <p className="text-ink-600 text-sm">
+                  <p className="text-gray-700 text-sm">
                     {getYaoExplanation(pos, yao.value === 1)}
                   </p>
                 </div>
@@ -88,47 +136,24 @@ export default function ResultDisplay({ result, onReset }: Props) {
         </div>
       )}
 
-      {/* 之卦 */}
-      <div className="bg-white rounded-2xl shadow-lg border-2 border-ink-300 p-8">
-        <div className="text-center mb-6">
-          <span className="inline-block px-4 py-1 bg-ink-100 text-ink-600 rounded-full text-sm font-bold mb-3">
-            之卦
-          </span>
-          <h2 className="text-3xl font-serif font-bold text-ink-900">
-            {changedHexagram.name}
-          </h2>
-          <p className="text-ink-500 mt-1">{changedHexagram.symbol}</p>
-        </div>
-
-        <div className="bg-parchment-50 rounded-xl p-6">
-          <p className="text-ink-700 leading-relaxed text-lg">
-            {changedMeaning}
-          </p>
-        </div>
-
-        <p className="text-sm text-ink-400 mt-4 text-center">
-          {changedHexagram.description}
-        </p>
-      </div>
-
       {/* 操作按鈕 */}
       <div className="flex gap-4">
         <button
           onClick={handleShare}
-          className="flex-1 py-3 bg-gold-400 text-ink-900 rounded-xl font-bold hover:bg-gold-500 transition-colors"
+          className="btn-secondary flex-1"
         >
           📤 分享結果
         </button>
         <button
           onClick={onReset}
-          className="flex-1 py-3 bg-ink-800 text-parchment-100 rounded-xl font-bold hover:bg-ink-700 transition-colors"
+          className="btn-chinese flex-1"
         >
           🔄 重新占卜
         </button>
       </div>
 
       {/* 免責聲明 */}
-      <div className="text-center text-xs text-ink-400 mt-8">
+      <div className="text-center text-xs text-gray-500 mt-8 p-4">
         <p>
           💡 占卜結果僅供參考，人生掌握在自己手中。
         </p>
