@@ -1,6 +1,6 @@
 'use client';
 
-import { getMeaning, generateConclusion } from '@/lib/calculator';
+import { getMeaning, generateConclusion, generateFinalSummary } from '@/lib/calculator';
 import type { DivinationResult } from '@/lib/calculator';
 
 interface Props {
@@ -209,10 +209,7 @@ export default function ResultDisplay({ result, onReset }: Props) {
         <h4 className="text-lg font-bold text-gray-900 mb-4">【總結】</h4>
         <div className="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
           <p className="text-gray-800 leading-relaxed text-center font-medium">
-            {movingYao.length === 0 ? '目前局勢穩定，按現有計劃行事即可，不宜急於求變。' :
-             movingYao.length === 1 ? '事情正在轉變，順應變化，把握即將出現的機會。' :
-             movingYao.length === 2 ? '有機會，但不是馬上；先化解阻滯，再自然推進。' :
-             '變動較大，給事情一些時間，順其自然發展。'}
+            {generateFinalSummary(originalHexagram, changedHexagram, movingYao, category, movingYao.length > 0)}
           </p>
         </div>
       </div>

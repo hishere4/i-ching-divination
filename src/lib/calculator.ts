@@ -246,7 +246,7 @@ function generateGeneralAdvice(original: Hexagram, changed: Hexagram, movingYao:
 /**
  * 生成最終總結
  */
-function generateFinalSummary(original: Hexagram, changed: Hexagram, movingYao: number[], category: string, hasMoving: boolean): string {
+export function generateFinalSummary(original: Hexagram, changed: Hexagram, movingYao: number[], category: string, hasMoving: boolean): string {
   const count = movingYao.length;
   
   if (!hasMoving) {
