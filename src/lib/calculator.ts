@@ -1,4 +1,7 @@
-import { hexagramMap, Hexagram } from './hexagrams';
+import { hexagramMap } from './hexagrams';
+import type { Hexagram } from './hexagrams';
+
+export type { Hexagram };
 
 export interface YaoInput {
   position: number; // 1-6, 從下到上
