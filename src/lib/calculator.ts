@@ -1,7 +1,5 @@
 import { hexagramMap, Hexagram } from './hexagrams';
 
-export { Hexagram };
-
 export interface YaoInput {
   position: number; // 1-6, 從下到上
   value: number;    // 1=陽, 0=陰

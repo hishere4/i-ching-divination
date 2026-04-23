@@ -1,106 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { getMeaning, generateConclusion } from '@/lib/calculator';
-import type { DivinationResult, Hexagram } from '@/lib/calculator';
+import type { DivinationResult } from '@/lib/calculator';
 
 interface Props {
   result: DivinationResult;
   onReset: () => void;
-}
-
-interface AIPromptSectionProps {
-  question: string;
-  originalHexagram: Hexagram;
-  changedHexagram: Hexagram;
-  movingYao: number[];
-  originalYao: DivinationResult['originalYao'];
-}
-
-function AIPromptSection({ question, originalHexagram, changedHexagram, movingYao, originalYao }: AIPromptSectionProps) {
-  const [copied, setCopied] = useState(false);
-
-  // 獲取爻位名稱
-  const getYaoName = (position: number): string => {
-    const names = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
-    return names[position - 1] || '';
-  };
-
-  // 獲取爻的顯示名稱
-  const getYaoDisplayName = (value: number, isMoving: boolean): string => {
-    if (isMoving) {
-      return value === 1 ? '老陽（陽動）' : '老陰（陰動）';
-    }
-    return value === 1 ? '少陽（陽靜）' : '少陰（陰靜）';
-  };
-
-  // 生成 AI Prompt
-  const generatePrompt = () => {
-    const yaoList = originalYao.map(y => 
-      `${getYaoName(y.position)}：${getYaoDisplayName(y.value, y.isMoving)}`
-    ).join('\n');
-
-    return `你是一位精通易經的解卦師。請根據以下卦象為我深入解卦：
-
-【我的問題】
-${question}
-
-【卦象資料】
-本卦：${originalHexagram.name}（${originalHexagram.pattern}）
-${movingYao.length > 0 ? `之卦：${changedHexagram.name}（${changedHexagram.pattern}）` : '無動爻'}
-
-六爻：
-${yaoList}
-
-${movingYao.length > 0 ? `動爻：${movingYao.map(p => getYaoName(p)).join('、')}` : ''}
-
-【本卦解釋】
-${originalHexagram.description}
-
-${movingYao.length > 0 ? `【之卦解釋】\n${changedHexagram.description}` : ''}
-
-請以一位資深易經解卦師的身份，針對我的問題給出詳細、人性化、有溫度的解讀和建議。請用繁體中文回答。`;
-  };
-
-  const handleCopy = async () => {
-    const prompt = generatePrompt();
-    await navigator.clipboard.writeText(prompt);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="chinese-card p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300">
-      <h4 className="text-lg font-bold text-blue-900 mb-3">🔮 想要更深入解卦？</h4>
-      <p className="text-sm text-blue-700 mb-4 leading-relaxed">
-        上方建議是基於卦象的通用解讀。如果你想獲得更針對你個人情況的詳細分析，可以複製下方 Prompt 到 ChatGPT / Claude 等 AI 工具，讓它為你提供更深入、更個人化的解卦。
-      </p>
-      
-      <div className="bg-white rounded-lg p-4 border border-blue-200 mb-4">
-        <p className="text-xs text-gray-500 mb-2 font-bold">已包含你的問題 + 完整卦象資料</p>
-        <div className="bg-gray-50 rounded p-3 text-xs text-gray-700 font-mono leading-relaxed max-h-48 overflow-y-auto whitespace-pre-line">
-          {generatePrompt().substring(0, 200)}... 
-        </div>
-      </div>
-
-      <button
-        onClick={handleCopy}
-        className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all flex items-center justify-center gap-2"
-      >
-        {copied ? (
-          <>
-            <span>✅</span>
-            <span>已複製！快去 AI 解卦吧</span>
-          </>
-        ) : (
-          <>
-            <span>📋</span>
-            <span>複製解卦 Prompt</span>
-          </>
-        )}
-      </button>
-    </div>
-  );
 }
 
 export default function ResultDisplay({ result, onReset }: Props) {
@@ -304,15 +209,6 @@ export default function ResultDisplay({ result, onReset }: Props) {
           {conclusion}
         </div>
       </div>
-
-      {/* 深度解卦 Prompt */}
-      <AIPromptSection 
-        question={question}
-        originalHexagram={originalHexagram}
-        changedHexagram={changedHexagram}
-        movingYao={movingYao}
-        originalYao={result.originalYao}
-      />
 
       {/* 總結 */}
       <div className="bg-gradient-to-br from-red-700 to-red-800 text-white p-6 rounded-xl shadow-lg">
