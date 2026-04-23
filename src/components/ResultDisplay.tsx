@@ -1,6 +1,6 @@
 'use client';
 
-import { getMeaning, getYaoExplanation, generateConclusion } from '@/lib/calculator';
+import { getMeaning, generateConclusion } from '@/lib/calculator';
 import type { DivinationResult } from '@/lib/calculator';
 
 interface Props {
@@ -44,17 +44,32 @@ export default function ResultDisplay({ result, onReset }: Props) {
     }
   };
 
-  // 渲染爻線（無★）
+  // 渲染爻線（無★）- 從初爻到上爻（與立卦順序一致）
   const renderYaoLines = (pattern: string, highlightMoving: boolean = false) => {
-    return pattern.split('').reverse().map((yao, idx) => {
+    return pattern.split('').map((yao, idx) => {
       const isYang = yao === '1';
-      const isMoving = highlightMoving && movingYao.includes(6 - idx);
+      const position = idx + 1; // 1=初爻, 2=二爻, ..., 6=上爻
+      const isMoving = highlightMoving && movingYao.includes(position);
       return (
         <div key={idx} className="w-full mb-2 flex justify-center">
           <div className={`${isYang ? 'yao-yang' : 'yao-yin'} ${isMoving ? 'yao-active' : ''}`} style={{width: '120px'}}></div>
         </div>
       );
     });
+  };
+
+  // 獲取爻位名稱
+  const getYaoName = (position: number): string => {
+    const names = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
+    return names[position - 1] || '';
+  };
+
+  // 獲取爻的顯示名稱
+  const getYaoDisplayName = (value: number, isMoving: boolean): string => {
+    if (isMoving) {
+      return value === 1 ? '老陽' : '老陰';
+    }
+    return value === 1 ? '少陽' : '少陰';
   };
 
   return (
@@ -91,34 +106,6 @@ export default function ResultDisplay({ result, onReset }: Props) {
         </p>
       </div>
 
-      {/* 變卦（動爻解釋）*/}
-      {movingYao && movingYao.length > 0 && (
-        <div className="chinese-card p-6">
-          <h3 className="text-xl font-bold text-red-700 mb-4 text-center" style={{fontFamily: "'Ma Shan Zheng', cursive"}}>
-            變卦
-          </h3>
-          <p className="text-center text-sm text-gray-600 mb-4">
-            共 {movingYao.length} 個動爻，局面正在轉變
-          </p>
-          <div className="space-y-3">
-            {movingYao.map(pos => {
-              const yao = result.originalYao?.[pos - 1];
-              if (!yao) return null;
-              return (
-                <div key={pos} className="p-4 bg-red-50 rounded-lg border border-red-200">
-                  <p className="font-bold text-red-700 mb-1">
-                    第{pos}爻（{yao.value === 1 ? '陽' : '陰'}動 → {yao.value === 1 ? '陰' : '陽'}）
-                  </p>
-                  <p className="text-gray-700 text-sm">
-                    {getYaoExplanation(pos, yao.value === 1)}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       {/* 之卦 */}
       <div className="result-card">
         <div className="text-center mb-4">
@@ -145,20 +132,105 @@ export default function ResultDisplay({ result, onReset }: Props) {
         </p>
       </div>
 
-      {/* 結論 */}
-      <div className="chinese-card p-6">
-        <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center" style={{fontFamily: "'Ma Shan Zheng', cursive"}}>
+      {/* 結論標題 */}
+      <div className="text-center py-4">
+        <h3 className="text-2xl font-bold text-gray-900" style={{fontFamily: "'Ma Shan Zheng', cursive"}}>
           結論
         </h3>
-        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-6 border-2 border-amber-300">
-          <div className="text-gray-800 leading-loose whitespace-pre-line text-base space-y-4">
-            {conclusion}
-          </div>
+        <div className="w-24 h-1 bg-amber-500 mx-auto mt-2 rounded-full"></div>
+      </div>
+
+      {/* 免責聲明 */}
+      <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+        <p className="text-sm text-amber-800 leading-relaxed">
+          <span className="font-bold">免責聲明：</span>
+          卜卦未必能給出一個絕對肯定的答案，這個結果較適合解讀成「事情發展的趨勢與條件」，而不是「一定會如何」的保證。
+        </p>
+      </div>
+
+      {/* 你的卦象 */}
+      <div className="chinese-card p-5">
+        <h4 className="text-lg font-bold text-gray-900 mb-3">你的卦象</h4>
+        <div className="space-y-1 text-sm">
+          {result.originalYao.map((yao, idx) => (
+            <div key={idx} className="flex items-center gap-2">
+              <span className="text-amber-700">•</span>
+              <span className="font-medium">{getYaoName(yao.position)}：</span>
+              <span>{getYaoDisplayName(yao.value, yao.isMoving)}</span>
+            </div>
+          ))}
         </div>
       </div>
 
+      {/* 卦象分析 */}
+      <div className="chinese-card p-5">
+        <h4 className="text-lg font-bold text-gray-900 mb-3">卦象分析</h4>
+        <div className="text-gray-700 leading-relaxed space-y-3">
+          <p>
+            由下而上看，本卦「{originalHexagram.name}」可以理解為一種「{originalHexagram.description.replace('。', '')}」的狀態。
+          </p>
+          {movingYao.length > 0 ? (
+            <p>
+              而{movingYao.map(p => getYaoName(p)).join('、')}變，表示：
+              {movingYao.length === 1 ? '局面正在發生單一的轉變' : 
+               movingYao.length === 2 ? '局面正在多個層面同時轉變' : 
+               '局面正在經歷較大的變動'}
+            </p>
+          ) : (
+            <p>沒有動爻，表示目前處於相對穩定的狀態。</p>
+          )}
+        </div>
+      </div>
+
+      {/* 簡單解讀 */}
+      <div className="chinese-card p-5">
+        <h4 className="text-lg font-bold text-gray-900 mb-3">簡單解讀</h4>
+        <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-gray-400">
+          <p className="text-gray-700 italic leading-relaxed">
+            「{getMeaning(originalHexagram, category)}」
+          </p>
+        </div>
+        {movingYao.length > 0 && (
+          <div className="mt-4">
+            <p className="text-sm text-gray-600 mb-2">變化後的之卦「{changedHexagram.name}」，則暗示：</p>
+            <div className="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-400">
+              <p className="text-gray-700 italic leading-relaxed">
+                「{getMeaning(changedHexagram, category)}」
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 具體建議 */}
+      <div className="chinese-card p-5">
+        <h4 className="text-lg font-bold text-gray-900 mb-3">具體建議</h4>
+        <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+          {conclusion}
+        </div>
+      </div>
+
+      {/* 總結 */}
+      <div className="bg-gradient-to-br from-red-700 to-red-800 text-white p-6 rounded-xl shadow-lg">
+        <h4 className="text-lg font-bold mb-3 text-center">總結</h4>
+        <p className="text-center leading-relaxed text-white/90">
+          {movingYao.length === 0 ? '目前局勢穩定，按現有計劃行事即可，不宜急於求變。' :
+           movingYao.length === 1 ? '事情正在轉變，順應變化，把握即將出現的機會。' :
+           movingYao.length === 2 ? '有機會，但不是馬上；先化解阻滯，再自然推進。' :
+           '變動較大，給事情一些時間，順其自然發展。'}
+        </p>
+      </div>
+
+      {/* 提醒 */}
+      <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg">
+        <p className="text-sm text-gray-600 leading-relaxed">
+          <span className="font-bold">提醒：</span>
+          這類問題最終往往不是單靠卦象，而是很受「現實情況、主動程度、時間安排、客觀條件」影響。卦象提供的是一個「趨勢參考」，真正嘅結果，始終掌握在你自己手中。
+        </p>
+      </div>
+
       {/* 操作按鈕 */}
-      <div className="flex gap-4">
+      <div className="flex gap-4 pt-4">
         <button
           onClick={handleShare}
           className="btn-secondary flex-1"

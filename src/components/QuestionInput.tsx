@@ -43,7 +43,7 @@ export default function QuestionInput({ onSubmit }: Props) {
             setError('');
           }}
           placeholder="例如：下個月面試會不會成功 / 我們能不能和好 / 接下來該怎麼做"
-          className="input-chinese resize-none h-32"
+          className="input-chinese resize-none h-32 text-lg"
         />
         
         {error && (
