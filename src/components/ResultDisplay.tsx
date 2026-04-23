@@ -140,17 +140,9 @@ export default function ResultDisplay({ result, onReset }: Props) {
         <div className="w-24 h-1 bg-amber-500 mx-auto mt-2 rounded-full"></div>
       </div>
 
-      {/* 免責聲明 */}
-      <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-        <p className="text-sm text-amber-800 leading-relaxed">
-          <span className="font-bold">免責聲明：</span>
-          卜卦未必能給出一個絕對肯定的答案，這個結果較適合解讀成「事情發展的趨勢與條件」，而不是「一定會如何」的保證。
-        </p>
-      </div>
-
       {/* 你的卦象 */}
-      <div className="chinese-card p-5">
-        <h4 className="text-lg font-bold text-gray-900 mb-3">你的卦象</h4>
+      <div className="chinese-card p-5 mb-4">
+        <h4 className="text-lg font-bold text-gray-900 mb-3">【你的卦象】</h4>
         <div className="space-y-1 text-sm">
           {result.originalYao.map((yao, idx) => (
             <div key={idx} className="flex items-center gap-2">
@@ -163,18 +155,18 @@ export default function ResultDisplay({ result, onReset }: Props) {
       </div>
 
       {/* 卦象分析 */}
-      <div className="chinese-card p-5">
-        <h4 className="text-lg font-bold text-gray-900 mb-3">卦象分析</h4>
-        <div className="text-gray-700 leading-relaxed space-y-3">
+      <div className="chinese-card p-5 mb-4">
+        <h4 className="text-lg font-bold text-gray-900 mb-4">【卦象分析】</h4>
+        <div className="text-gray-700 leading-relaxed space-y-4">
           <p>
             由下而上看，本卦「{originalHexagram.name}」可以理解為一種「{originalHexagram.description.replace('。', '')}」的狀態。
           </p>
           {movingYao.length > 0 ? (
             <p>
               而{movingYao.map(p => getYaoName(p)).join('、')}變，表示：
-              {movingYao.length === 1 ? '局面正在發生單一的轉變' : 
-               movingYao.length === 2 ? '局面正在多個層面同時轉變' : 
-               '局面正在經歷較大的變動'}
+              {movingYao.length === 1 ? '局面正在發生單一的轉變。' : 
+               movingYao.length === 2 ? '局面正在多個層面同時轉變。' : 
+               '局面正在經歷較大的變動。'}
             </p>
           ) : (
             <p>沒有動爻，表示目前處於相對穩定的狀態。</p>
@@ -183,36 +175,38 @@ export default function ResultDisplay({ result, onReset }: Props) {
       </div>
 
       {/* 簡單解讀 */}
-      <div className="chinese-card p-5">
-        <h4 className="text-lg font-bold text-gray-900 mb-3">簡單解讀</h4>
-        <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-gray-400">
-          <p className="text-gray-700 italic leading-relaxed">
-            「{getMeaning(originalHexagram, category)}」
-          </p>
-        </div>
-        {movingYao.length > 0 && (
-          <div className="mt-4">
-            <p className="text-sm text-gray-600 mb-2">變化後的之卦「{changedHexagram.name}」，則暗示：</p>
-            <div className="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-400">
-              <p className="text-gray-700 italic leading-relaxed">
-                「{getMeaning(changedHexagram, category)}」
-              </p>
-            </div>
+      <div className="chinese-card p-5 mb-4">
+        <h4 className="text-lg font-bold text-gray-900 mb-4">【簡單解讀】</h4>
+        <div className="space-y-4">
+          <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-gray-400">
+            <p className="text-gray-700 italic leading-relaxed">
+              「{getMeaning(originalHexagram, category)}」
+            </p>
           </div>
-        )}
+          {movingYao.length > 0 && (
+            <div>
+              <p className="text-sm text-gray-600 mb-2">變化後的之卦「{changedHexagram.name}」，則暗示：</p>
+              <div className="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-400">
+                <p className="text-gray-700 italic leading-relaxed">
+                  「{getMeaning(changedHexagram, category)}」
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 具體建議 */}
-      <div className="chinese-card p-5">
-        <h4 className="text-lg font-bold text-gray-900 mb-3">具體建議</h4>
-        <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+      <div className="chinese-card p-5 mb-4">
+        <h4 className="text-lg font-bold text-gray-900 mb-4">【具體建議】</h4>
+        <div className="text-gray-700 leading-relaxed whitespace-pre-line space-y-4">
           {conclusion}
         </div>
       </div>
 
       {/* 總結 */}
-      <div className="bg-gradient-to-br from-red-700 to-red-800 text-white p-6 rounded-xl shadow-lg">
-        <h4 className="text-lg font-bold mb-3 text-center">總結</h4>
+      <div className="bg-gradient-to-br from-red-700 to-red-800 text-white p-6 rounded-xl shadow-lg mb-4">
+        <h4 className="text-lg font-bold mb-4 text-center">【總結】</h4>
         <p className="text-center leading-relaxed text-white/90">
           {movingYao.length === 0 ? '目前局勢穩定，按現有計劃行事即可，不宜急於求變。' :
            movingYao.length === 1 ? '事情正在轉變，順應變化，把握即將出現的機會。' :
@@ -222,10 +216,13 @@ export default function ResultDisplay({ result, onReset }: Props) {
       </div>
 
       {/* 提醒 */}
-      <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg">
-        <p className="text-sm text-gray-600 leading-relaxed">
-          <span className="font-bold">提醒：</span>
-          這類問題最終往往不是單靠卦象，而是很受「現實情況、主動程度、時間安排、客觀條件」影響。卦象提供的是一個「趨勢參考」，真正嘅結果，始終掌握在你自己手中。
+      <div className="bg-gray-100 border border-gray-300 p-5 rounded-lg mb-4">
+        <h4 className="text-lg font-bold text-gray-900 mb-3">【提醒】</h4>
+        <p className="text-gray-600 leading-relaxed">
+          這類問題最終往往不是單靠卦象，而是很受「現實情況、主動程度、時間安排、客觀條件」影響。
+        </p>
+        <p className="text-gray-600 leading-relaxed mt-3">
+          卦象提供的是一個「趨勢參考」，真正嘅結果，始終掌握在你自己手中。
         </p>
       </div>
 
