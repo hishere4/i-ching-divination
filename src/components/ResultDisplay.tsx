@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { getMeaning, generateConclusion, generateFinalSummary } from '@/lib/calculator';
 import type { DivinationResult } from '@/lib/calculator';
 
@@ -26,22 +27,14 @@ export default function ResultDisplay({ result, onReset }: Props) {
   const changedMeaning = getMeaning(changedHexagram, category);
   const conclusion = generateConclusion(originalHexagram, changedHexagram, movingYao, category, question, result.originalYao);
 
+  const [copied, setCopied] = useState(false);
+
   const handleShare = async () => {
-    const text = `【妙算申帷幄】\n問：${question}\n\n本卦：${originalHexagram.name}\n${originalMeaning}\n\n之卦：${changedHexagram.name}\n${changedMeaning}\n\n${conclusion}`;
+    const text = `【妙算申帷幄 - 占卜結果】\n\n【問題】\n${question}\n\n【本卦】\n${originalHexagram.name}\n${originalMeaning}\n\n【之卦】\n${changedHexagram.name}\n${changedMeaning}\n\n【卦象】\n${result.originalYao.map(y => `${getYaoName(y.position)}：${getYaoDisplayName(y.value, y.isMoving)}`).join('\n')}\n\n【具體建議】\n${conclusion}\n\n【總結】\n${generateFinalSummary(originalHexagram, changedHexagram, movingYao, category, movingYao.length > 0)}\n\n---\n妙算申帷幄 · 傳統智慧 · 現代解讀`;
     
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: '妙算申帷幄 - 占卜結果',
-          text: text,
-        });
-      } catch {
-        // 用戶取消分享
-      }
-    } else {
-      await navigator.clipboard.writeText(text);
-      alert('已複製到剪貼簿！');
-    }
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   // 渲染爻線（無★）- 從初爻到上爻（與立卦順序一致）
@@ -231,7 +224,7 @@ export default function ResultDisplay({ result, onReset }: Props) {
           onClick={handleShare}
           className="btn-secondary flex-1"
         >
-          📤 分享結果
+          {copied ? '✅ 已複製！' : '📋 複製結果'}
         </button>
         <button
           onClick={onReset}
