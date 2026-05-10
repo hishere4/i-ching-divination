@@ -140,6 +140,15 @@ export default function YaoInput({ onSubmit, onBack }: Props) {
         <p className="text-red-600 text-sm text-center mb-4 bg-red-50 p-3 rounded-lg">{error}</p>
       )}
 
+      <div className="text-center mb-2">
+        <p className="text-sm text-amber-700 font-medium">
+          已選擇 {yaoValues.filter(v => v !== undefined).length} / 6 爻
+          {yaoValues.filter(v => v !== undefined).length === 6 && (
+            <span className="text-green-600 ml-2">✓ 完成</span>
+          )}
+        </p>
+      </div>
+
       <div className="flex gap-4">
         <button
           onClick={onBack}
